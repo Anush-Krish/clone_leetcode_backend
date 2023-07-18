@@ -8,26 +8,31 @@ const users =[];
 const QUESTIONS =[{
     title:"two states",
     description:"Given an arrray,return max",
-    testCases:{
+    testCases:[{
         input: "[1,2,3,4,5]",
         output: "5"
-    }
+    }]
 }];
 const SUBMISSION=[
 
-    {
-        userId: "1",
-        questionId: "1",
-        code: "function max(arr) { return Math.max (. parr) )",
-        status: "accepted"
-    },
-    {
-        userId: "1",
-        questionId: "1",
-        code: "function max(arr) { return Math.min(...arr) ]",
-        status:"rejected"
-    }
+    // {
+    //     userId: "1",
+    //     questionId: "1",
+    //     code: "function max(arr) { return Math.max (. parr) )",
+    //     status: "accepted"
+    // },
+    // {
+    //     userId: "1",
+    //     questionId: "1",
+    //     code: "function max(arr) { return Math.min(...arr) ]",
+    //     status:"rejected"
+    // }
 ];
+// Serve the signup.html file
+app.get('/', function(req, res) {
+    res.sendFile('/Users/anushkrishna/Desktop'+'/signup.html');
+});
+app.use(express.urlencoded({ extended: true }));
 
 app.post('/signup', function (req, res) {
     //add logic to decode body
@@ -74,8 +79,21 @@ app.post('/login', function (req, res) {
     //also send back a token as of now any string
     //if password not same return back 401 to client
 
+    const{username,password}=req.body;
+    if(!username || !password){
+        return res.status(400).json({message:'Username and Password Required.'});
+    }
+    const user=users.find(user =>user.username===username);
+    if(!user){
+        return res.status(401).json({message:'Invalid Username or Password.'});
+    }
+    if(user.password===password){
+        return res.status(200).json({message:'Login Successful.'});
+    }
+    else{
+        return res.status(401).json({message:'Invalid Username or Password.'})
+    }
 
-    res.send('Hello World!from route 2')
 })
 app.get('/questions',function (req,res){
     //returns all the questions in the QUESTION array.
@@ -90,6 +108,8 @@ app.post("/submissions",function (req, res) {
     //let the user submit a problem,randomly accept or reject the solution
     //store the submission in the SUBMISSION array above.
 })
+
+
 //to start http server
 app.listen(port, function () {
     console.log(`Example app listening on port ${port}`)
